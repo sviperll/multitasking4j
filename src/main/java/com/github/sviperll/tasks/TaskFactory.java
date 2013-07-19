@@ -4,9 +4,20 @@
 package com.github.sviperll.tasks;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Factory to build two tasks
+ * <ol>
+ * <li> Main task to perform actual work
+ * <li> Closing task to perform cleanup for main task
+ * </ol>
  */
 public interface TaskFactory {
-    Task createTask();
+    /**
+     * @return "main" task to perform actual work
+     */
+    Task createWorkTask();
+
+    /**
+     * @return "closing" task to perform cleanup for "main" task
+     */
+    Task createClosingTask();
 }

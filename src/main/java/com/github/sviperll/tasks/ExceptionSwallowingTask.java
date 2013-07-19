@@ -7,14 +7,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Task that catches all exceptions of the original task, logges them and then just suppresses them
  */
-public class ExceptionSwallowingTask implements Task {
+class ExceptionSwallowingTask implements Task {
     private final Task task;
     private final Logger logger;
     private final long pause;
 
+    /**
+     * 
+     * @param task subtask to perform actual work
+     * @param logger logger used to log exceptions
+     * @param pause pause after exception
+     */
     public ExceptionSwallowingTask(Task task, Logger logger, long pause) {
         this.task = task;
         this.logger = logger;

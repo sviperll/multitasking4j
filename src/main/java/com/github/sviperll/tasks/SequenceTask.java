@@ -4,11 +4,13 @@
 package com.github.sviperll.tasks;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Run it's subtasks in sequence
  */
 public class SequenceTask implements Task {
     private final Task[] tasks;
+    /**
+     * @param tasks Array of subtasks
+     */
     public SequenceTask(Task[] tasks) {
         this.tasks = tasks;
     }

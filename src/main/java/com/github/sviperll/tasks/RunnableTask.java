@@ -4,24 +4,37 @@
 package com.github.sviperll.tasks;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Task that runs given Runnable action
  */
 public class RunnableTask implements Task {
     private final Runnable runnable;
+    
+    /**
+     * 
+     * @param runnable action to perform
+     */
     public RunnableTask(Runnable runnable) {
         this.runnable = runnable;
     }
 
+    /**
+     * do nothing
+     */
     @Override
     public void stop() {
     }
 
+    /**
+     * Calls given runnable
+     */
     @Override
     public void run() {
         runnable.run();
     }
 
+    /**
+     * Do nothing
+     */
     @Override
     public void close() {
     }

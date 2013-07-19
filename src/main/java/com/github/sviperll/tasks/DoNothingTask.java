@@ -4,10 +4,9 @@
 package com.github.sviperll.tasks;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Task that does nothing
  */
-public class DoNothingTask implements Task {
+class DoNothingTask implements Task {
 
     @Override
     public void stop() {

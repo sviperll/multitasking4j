@@ -4,8 +4,7 @@
 package com.github.sviperll.tasks;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Wrapps given task in Runnable object
  */
 class TaskRunnable implements Runnable {
     private final Task task;
@@ -17,5 +16,4 @@ class TaskRunnable implements Runnable {
     public void run() {
         task.run();
     }
-
 }

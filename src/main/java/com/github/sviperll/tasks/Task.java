@@ -3,12 +3,26 @@
  */
 package com.github.sviperll.tasks;
 
+import java.io.Closeable;
+
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Actions to perform
  */
-public interface Task {
+public interface Task extends Closeable {
+    /**
+     * Performs actual work associated with given task
+     */
     void run();
+    
+    /**
+     * Interrupts current work performed by task and abort any unfinished work
+     */
     void stop();
+
+    /**
+     * Performs cleanup for given task, i.e. closes files and any other resources,
+     * removes temporary files or database records, etc
+     */
+    @Override
     void close();
 }

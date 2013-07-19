@@ -8,12 +8,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Task that runs it's subtasks in parallel
+ * Close methods are run sequentially
  */
 public class ParallelTask implements Task {
     private final Task[] tasks;
     private volatile ThreadManager threadManager = new ThreadManager(Collections.<Thread>emptyList());
+    
+    /**
+     * 
+     * @param tasks array of subtasks
+     */
     public ParallelTask(Task[] tasks) {
         this.tasks = tasks;
     }

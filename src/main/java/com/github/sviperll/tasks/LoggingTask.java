@@ -7,13 +7,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Victor Nazarov <asviraspossible@gmail.com>
+ * Task that logs when it's methods are called
  */
-public class LoggingTask implements Task {
+class LoggingTask implements Task {
     private final String name;
     private final Logger logger;
     private final Task task;
+    
+    /**
+     * 
+     * @param name name to use in log messages
+     * @param logger logger to perform logging
+     * @param task subtask that does actual work
+     */
     public LoggingTask(String name, Logger logger, Task task) {
         this.name = name;
         this.logger = logger;
@@ -22,21 +28,21 @@ public class LoggingTask implements Task {
 
     @Override
     public void stop() {
-        logger.log(Level.INFO, "{0}: exiting...", name);
+        logger.log(Level.FINE, "{0}: exiting...", name);
         task.stop();
     }
 
     @Override
     public void run() {
-        logger.log(Level.INFO, "{0}: started", name);
+        logger.log(Level.FINE, "{0}: started", name);
         task.run();
-        logger.log(Level.INFO, "{0}: finished", name);
+        logger.log(Level.FINE, "{0}: finished", name);
     }
 
     @Override
     public void close() {
-        logger.log(Level.INFO, "{0}: closing...", name);
+        logger.log(Level.FINE, "{0}: closing...", name);
         task.close();
-        logger.log(Level.INFO, "{0}: closed", name);
+        logger.log(Level.FINE, "{0}: closed", name);
     }
 }
