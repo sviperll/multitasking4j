@@ -72,7 +72,7 @@
     <dependency>
       <groupId>com.github.sviperll</groupId>
       <artifactId>sviperll-common</artifactId>
-      <version>0.7-SNAPSHOT</version>
+      <version>0.7</version>
     </dependency>
   </dependencies>
 </project>
