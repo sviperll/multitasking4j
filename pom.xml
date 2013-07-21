@@ -15,9 +15,9 @@
   </properties>
 
     <scm>
-        <connection>scm:git:git://github.com/sviperll/sviperll-tasks.git</connection>
-        <developerConnection>scm:git:git@github.com:sviperll/sviperll-tasks.git</developerConnection>
-        <url>https://github.com/sviperll/sviperll-tasks</url>
+        <connection>scm:git:git://github.com/sviperll/sviperll-task.git</connection>
+        <developerConnection>scm:git:git@github.com:sviperll/sviperll-task.git</developerConnection>
+        <url>https://github.com/sviperll/sviperll-task</url>
     </scm>
     <licenses>
         <license>
