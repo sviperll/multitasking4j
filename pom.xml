@@ -3,7 +3,7 @@
 
   <groupId>com.github.sviperll</groupId>
   <artifactId>sviperll-task</artifactId>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>sviperll-task</name>
