@@ -12,7 +12,7 @@ Use maven dependency:
         <dependency>
             <groupId>com.github.sviperll</groupId>
             <artifactId>sviperll-task</artifactId>
-            <version>0.3</version>
+            <version>1.0</version>
         </dependency>
 ```
 
