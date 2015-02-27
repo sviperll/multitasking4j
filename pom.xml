@@ -8,7 +8,7 @@
     <groupId>com.github.sviperll</groupId>
     <artifactId>multitasking4j</artifactId>
     <name>multitasking4j</name>
-    <version>0.17</version>
+    <version>0.18-SNAPSHOT</version>
     <packaging>jar</packaging>
     <url>https://github.com/sviperll/multitasking4j</url>
     <properties>
@@ -18,7 +18,7 @@
         <connection>scm:git:git://github.com/sviperll/multitasking4j.git</connection>
         <developerConnection>scm:git:git@github.com:sviperll/multitasking4j.git</developerConnection>
         <url>https://github.com/sviperll/multitasking4j</url>
-        <tag>multitasking4j-0.17</tag>
+        <tag>HEAD</tag>
     </scm>
     <licenses>
         <license>
