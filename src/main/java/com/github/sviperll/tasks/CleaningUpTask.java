@@ -26,46 +26,42 @@
  */
 package com.github.sviperll.tasks;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * TaskDefinition that logs when it's methods are called
+ * This class represents TaskDefinition that calls cleanup method of the original task when perform.
+ * <p>
+ * This class allowes to extract cleanup action of some task into standalone task
  */
-class LoggingTask implements TaskDefinition {
-    private final String name;
-    private final Logger logger;
+class CleaningUpTask implements TaskDefinition {
     private final TaskDefinition task;
-    
+
     /**
      * 
-     * @param name name to use in log messages
-     * @param logger logger to perform logging
-     * @param task subtask that does actual work
+     * @param task task to extract cleanup behaviour from
      */
-    public LoggingTask(String name, Logger logger, TaskDefinition task) {
-        this.name = name;
-        this.logger = logger;
+    public CleaningUpTask(TaskDefinition task) {
         this.task = task;
     }
 
-    @Override
-    public void signalKill() {
-        logger.log(Level.FINE, "{0}: exiting...", name);
-        task.signalKill();
-    }
-
+    /**
+     * Calls #cleanup method of the original task (@see TaskDefinition#cleanup)
+     */
     @Override
     public void perform() {
-        logger.log(Level.FINE, "{0}: started", name);
-        task.perform();
-        logger.log(Level.FINE, "{0}: finished", name);
+        task.cleanup();
     }
 
+    /**
+     * does nothing
+     */
+    @Override
+    public void signalKill() {
+    }
+
+
+    /**
+     * does nothing
+     */
     @Override
     public void cleanup() {
-        logger.log(Level.FINE, "{0}: closing...", name);
-        task.cleanup();
-        logger.log(Level.FINE, "{0}: closed", name);
     }
 }

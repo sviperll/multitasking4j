@@ -1,22 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>com.github.sviperll</groupId>
-  <artifactId>sviperll-task</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>sviperll-task</name>
-  <url>http://maven.apache.org</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.sviperll</groupId>
+        <artifactId>sviperll-maven-parent-6</artifactId>
+        <version>3.1</version>
+    </parent>
+    <groupId>com.github.sviperll</groupId>
+    <artifactId>multitasking4j</artifactId>
+    <name>multitasking4j</name>
+    <version>0.17-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <url>https://github.com/sviperll/multitasking4j</url>
+    <properties>
+        <netbeans.hint.license>BSD3</netbeans.hint.license>
+    </properties>
     <scm>
-        <connection>scm:git:git://github.com/sviperll/sviperll-task.git</connection>
-        <developerConnection>scm:git:git@github.com:sviperll/sviperll-task.git</developerConnection>
-        <url>https://github.com/sviperll/sviperll-task</url>
+        <connection>scm:git:git://github.com/sviperll/multitasking4j.git</connection>
+        <developerConnection>scm:git:git@github.com:sviperll/multitasking4j.git</developerConnection>
+        <url>https://github.com/sviperll/multitasking4j</url>
+        <tag>HEAD</tag>
     </scm>
     <licenses>
         <license>
@@ -25,6 +27,24 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>
+                    <docletArtifact>
+                        <groupId>ch.raffael.pegdown-doclet</groupId>
+                        <artifactId>pegdown-doclet</artifactId>
+                        <version>1.1</version>
+                    </docletArtifact>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <developers>
         <developer>
             <id>sviperll</id>
@@ -32,41 +52,18 @@
             <email>asviraspossible@gmail.com</email>
         </developer>
     </developers>
-    <parent>
-        <groupId>com.github.sviperll</groupId>
-        <artifactId>sviperll-maven-parent</artifactId>
-        <version>1.0</version>
-    </parent>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <showDeprecation>true</showDeprecation>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-                <version>2.5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sviperll</groupId>
+            <artifactId>chicory-core</artifactId>
+            <version>0.17</version>
+        </dependency>
+    </dependencies>
 </project>
+

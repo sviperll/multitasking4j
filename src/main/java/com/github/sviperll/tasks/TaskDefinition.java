@@ -26,46 +26,23 @@
  */
 package com.github.sviperll.tasks;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * TaskDefinition that logs when it's methods are called
+ * Actions to perform
  */
-class LoggingTask implements TaskDefinition {
-    private final String name;
-    private final Logger logger;
-    private final TaskDefinition task;
+public interface TaskDefinition {
+    /**
+     * Performs actual work associated with given task
+     */
+    void perform();
     
     /**
-     * 
-     * @param name name to use in log messages
-     * @param logger logger to perform logging
-     * @param task subtask that does actual work
+     * Interrupts current work performed by task and abort any unfinished work
      */
-    public LoggingTask(String name, Logger logger, TaskDefinition task) {
-        this.name = name;
-        this.logger = logger;
-        this.task = task;
-    }
+    void signalKill();
 
-    @Override
-    public void signalKill() {
-        logger.log(Level.FINE, "{0}: exiting...", name);
-        task.signalKill();
-    }
-
-    @Override
-    public void perform() {
-        logger.log(Level.FINE, "{0}: started", name);
-        task.perform();
-        logger.log(Level.FINE, "{0}: finished", name);
-    }
-
-    @Override
-    public void cleanup() {
-        logger.log(Level.FINE, "{0}: closing...", name);
-        task.cleanup();
-        logger.log(Level.FINE, "{0}: closed", name);
-    }
+    /**
+     * Performs cleanup for given task, i.e. closes files and any other resources,
+     * removes temporary files or database records, etc
+     */
+    void cleanup();
 }

@@ -26,46 +26,53 @@
  */
 package com.github.sviperll.tasks;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * TaskDefinition that logs when it's methods are called
+ * This class represents TaskDefinition that behaves the same as a TaskDefinition passed to the constructor
+ * but performes additinal cleanup when cleanup method is called.
+ * <p>
+ * When #cleanup method runs instance of this class calls #cleanup method of original task
+ * and than calls Runnable closingAction passed to the constructor
  */
-class LoggingTask implements TaskDefinition {
-    private final String name;
-    private final Logger logger;
+class AdditionalCleanupActionTask implements TaskDefinition {
     private final TaskDefinition task;
-    
+    private final Runnable closingAction;
+
     /**
      * 
-     * @param name name to use in log messages
-     * @param logger logger to perform logging
-     * @param task subtask that does actual work
+     * @param task original task to base behaviour on
+     * @param closingAction aditional action to perform when instance is closed
      */
-    public LoggingTask(String name, Logger logger, TaskDefinition task) {
-        this.name = name;
-        this.logger = logger;
+    public AdditionalCleanupActionTask(TaskDefinition task, Runnable closingAction) {
         this.task = task;
+        this.closingAction = closingAction;
     }
 
+    /**
+     * Calls #perform method of the original task @see TaskDefinition#perform
+     */
+    @Override
+    public void perform() {
+        task.perform();
+    }
+
+    /**
+     * Calls #signalKill method of the original task @see TaskDefinition#signalKill
+     */
     @Override
     public void signalKill() {
-        logger.log(Level.FINE, "{0}: exiting...", name);
         task.signalKill();
     }
 
-    @Override
-    public void perform() {
-        logger.log(Level.FINE, "{0}: started", name);
-        task.perform();
-        logger.log(Level.FINE, "{0}: finished", name);
-    }
-
+    /**
+     * Calls #cleanup method of the original task (@see TaskDefinition#cleanup)
+     * and than calls additional closingAction
+     */
     @Override
     public void cleanup() {
-        logger.log(Level.FINE, "{0}: closing...", name);
-        task.cleanup();
-        logger.log(Level.FINE, "{0}: closed", name);
+        try {
+            task.cleanup();
+        } finally {
+            closingAction.run();
+        }
     }
 }

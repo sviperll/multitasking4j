@@ -26,46 +26,45 @@
  */
 package com.github.sviperll.tasks;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.github.sviperll.Consumer;
+import com.github.sviperll.ResourceProviderDefinition;
 
 /**
- * TaskDefinition that logs when it's methods are called
+ *
+ * @author Victor Nazarov <asviraspossible@gmail.com>
  */
-class LoggingTask implements TaskDefinition {
-    private final String name;
-    private final Logger logger;
-    private final TaskDefinition task;
-    
-    /**
-     * 
-     * @param name name to use in log messages
-     * @param logger logger to perform logging
-     * @param task subtask that does actual work
-     */
-    public LoggingTask(String name, Logger logger, TaskDefinition task) {
-        this.name = name;
-        this.logger = logger;
-        this.task = task;
-    }
+class SourceableResourceTask implements TaskDefinition {
+    private final ResourceProviderDefinition<? extends TaskDefinition> source;
+    private volatile TaskDefinition currentTask = Task.doNothing();
 
-    @Override
-    public void signalKill() {
-        logger.log(Level.FINE, "{0}: exiting...", name);
-        task.signalKill();
+    public SourceableResourceTask(ResourceProviderDefinition<? extends TaskDefinition> factory) {
+        this.source = factory;
     }
 
     @Override
     public void perform() {
-        logger.log(Level.FINE, "{0}: started", name);
-        task.perform();
-        logger.log(Level.FINE, "{0}: finished", name);
+        source.provideResourceTo(new Consumer<TaskDefinition>() {
+            @Override
+            public void accept(TaskDefinition task) {
+                currentTask = task;
+                task.perform();
+                currentTask = Task.doNothing();
+            }
+        });
+    }
+
+    @Override
+    public void signalKill() {
+        currentTask.signalKill();
     }
 
     @Override
     public void cleanup() {
-        logger.log(Level.FINE, "{0}: closing...", name);
-        task.cleanup();
-        logger.log(Level.FINE, "{0}: closed", name);
+        source.provideResourceTo(new Consumer<TaskDefinition>() {
+            @Override
+            public void accept(TaskDefinition task) {
+                task.cleanup();
+            }
+        });
     }
 }
