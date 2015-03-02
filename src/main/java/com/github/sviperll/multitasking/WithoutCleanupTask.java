@@ -24,44 +24,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
- * This class represents TaskDefinition that calls cleanup method of the original task when perform.
- * <p>
- * This class allowes to extract cleanup action of some task into standalone task
+ *
+ * @author vir
  */
-class CleaningUpTask implements TaskDefinition {
+class WithoutCleanupTask implements TaskDefinition {
     private final TaskDefinition task;
 
-    /**
-     * 
-     * @param task task to extract cleanup behaviour from
-     */
-    public CleaningUpTask(TaskDefinition task) {
+    public WithoutCleanupTask(TaskDefinition task) {
         this.task = task;
     }
 
-    /**
-     * Calls #cleanup method of the original task (@see TaskDefinition#cleanup)
-     */
     @Override
     public void perform() {
-        task.cleanup();
+        task.perform();
     }
 
-    /**
-     * does nothing
-     */
     @Override
     public void signalKill() {
+        task.signalKill();
     }
 
-
-    /**
-     * does nothing
-     */
     @Override
     public void cleanup() {
     }
+    
 }

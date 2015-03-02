@@ -24,61 +24,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
- * TaskDefinition that when perform repeatedly calles perform method of it's subtask
- * Given pause is performed between invokations of subtask
- * Stop method breaks repeating cycle
+ * TaskDefinition that runs given Runnable action
  */
-public class RepeatingTask implements TaskDefinition {
-    private volatile boolean doExit = false;
-    private final TaskDefinition task;
-    private final long pause;
-
+public class RunnableTask implements TaskDefinition {
+    private final Runnable runnable;
+    
     /**
      * 
-     * @param task subtask
-     * @param pause pause between subtask invokations in milliseconds
+     * @param runnable action to perform
      */
-    public RepeatingTask(TaskDefinition task, long pause) {
-        this.task = task;
-        this.pause = pause;
+    public RunnableTask(Runnable runnable) {
+        this.runnable = runnable;
     }
 
     /**
-     * Calls signalKill method of currently running subtask
-     * Stop repeating subtask
+     * do nothing
      */
     @Override
     public void signalKill() {
-        doExit = true;
-        task.signalKill();
     }
 
     /**
-     * Runs an repeats subtask with given pause between invokations
+     * Calls given runnable
      */
     @Override
     public void perform() {
-        try {
-            while (!doExit) {
-                task.perform();
-                try {
-                    Thread.sleep(pause);
-                } catch (InterruptedException ex) {
-                }
-            }
-        } finally {
-            doExit = false;
-        }
+        runnable.run();
     }
 
     /**
-     * Performes subtask cleanup as is, i. e. calls subtask's #signalKill method
+     * Do nothing
      */
     @Override
     public void cleanup() {
-        task.cleanup();
     }
 }

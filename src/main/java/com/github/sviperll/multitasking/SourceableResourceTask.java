@@ -24,62 +24,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
+
+import com.github.sviperll.Consumer;
+import com.github.sviperll.ResourceProviderDefinition;
 
 /**
- * This class allows to dynamically change behaviour of the task
- * 
- * #set method can be used to change current behaviour
+ *
+ * @author Victor Nazarov <asviraspossible@gmail.com>
  */
-public class DelegatingTask implements TaskDefinition {
-    private volatile TaskDefinition task;
+class SourceableResourceTask implements TaskDefinition {
+    private final ResourceProviderDefinition<? extends TaskDefinition> source;
+    private volatile TaskDefinition currentTask = Task.doNothing();
 
-    /**
-     * 
-     * @param task initial behaviour of new instance
-     */
-    public DelegatingTask(TaskDefinition task) {
-        this.task = task;
+    public SourceableResourceTask(ResourceProviderDefinition<? extends TaskDefinition> factory) {
+        this.source = factory;
     }
 
-    /**
-     * Creates new instance with "doing nothing" initial behaviour
-     * @see Task#doNothing()
-     */
-    public DelegatingTask() {
-        this(new DoNothingTask());
-    }
-
-    /**
-     * Changes current behaviour to new passed as a parameter
-     * 
-     * @param task new behaviour
-     */
-    public void set(TaskDefinition task) {
-        this.task = task;
-    }
-
-    /**
-     * runs #signalKill method of current behaviour, @see TaskDefinition#signalKill
-     */
-    @Override
-    public void signalKill() {
-        task.signalKill();
-    }
-
-    /**
-     * runs #perform method of current behaviour, @see TaskDefinition#perform
-     */
     @Override
     public void perform() {
-        task.perform();
+        source.provideResourceTo(new Consumer<TaskDefinition>() {
+            @Override
+            public void accept(TaskDefinition task) {
+                currentTask = task;
+                task.perform();
+                currentTask = Task.doNothing();
+            }
+        });
     }
 
-    /**
-     * runs #cleanup method of current behaviour, @see TaskDefinition#cleanup
-     */
+    @Override
+    public void signalKill() {
+        currentTask.signalKill();
+    }
+
     @Override
     public void cleanup() {
-        task.cleanup();
+        source.provideResourceTo(new Consumer<TaskDefinition>() {
+            @Override
+            public void accept(TaskDefinition task) {
+                task.cleanup();
+            }
+        });
     }
 }

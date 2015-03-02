@@ -24,25 +24,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
  * This class represents TaskDefinition that behaves the same as a TaskDefinition passed to the constructor
- * but performes cleanup as the last action performed by perform method.
+ * but performes additinal cleanup when cleanup method is called.
  * <p>
- * #cleanup method does nothing.
- * When #perform method is called, #perform method of the original task is called at first
- * and than #cleanup method of the original task is called
+ * When #cleanup method runs instance of this class calls #cleanup method of original task
+ * and than calls Runnable closingAction passed to the constructor
  */
-class CloseOnEachRunTask implements TaskDefinition {
+class AdditionalCleanupActionTask implements TaskDefinition {
     private final TaskDefinition task;
-    
+    private final Runnable closingAction;
+
     /**
      * 
      * @param task original task to base behaviour on
+     * @param closingAction aditional action to perform when instance is closed
      */
-    public CloseOnEachRunTask(TaskDefinition task) {
+    public AdditionalCleanupActionTask(TaskDefinition task, Runnable closingAction) {
         this.task = task;
+        this.closingAction = closingAction;
+    }
+
+    /**
+     * Calls #perform method of the original task @see TaskDefinition#perform
+     */
+    @Override
+    public void perform() {
+        task.perform();
     }
 
     /**
@@ -54,22 +64,15 @@ class CloseOnEachRunTask implements TaskDefinition {
     }
 
     /**
-     * Does nothing
+     * Calls #cleanup method of the original task (@see TaskDefinition#cleanup)
+     * and than calls additional closingAction
      */
     @Override
     public void cleanup() {
-    }
-
-    /**
-     * Calls #perform method of the original task @see TaskDefinition#perform
-     * and than calls #cleanup method of the original task @see TaskDefinition#cleanup
-     */
-    @Override
-    public void perform() {
         try {
-            task.perform();
-        } finally {
             task.cleanup();
+        } finally {
+            closingAction.run();
         }
     }
 }

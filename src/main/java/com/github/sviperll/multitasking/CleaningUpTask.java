@@ -24,55 +24,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
- * This class represents TaskDefinition that behaves the same as a TaskDefinition passed to the constructor
- * but performes additinal cleanup when cleanup method is called.
+ * This class represents TaskDefinition that calls cleanup method of the original task when perform.
  * <p>
- * When #cleanup method runs instance of this class calls #cleanup method of original task
- * and than calls Runnable closingAction passed to the constructor
+ * This class allowes to extract cleanup action of some task into standalone task
  */
-class AdditionalCleanupActionTask implements TaskDefinition {
+class CleaningUpTask implements TaskDefinition {
     private final TaskDefinition task;
-    private final Runnable closingAction;
 
     /**
      * 
-     * @param task original task to base behaviour on
-     * @param closingAction aditional action to perform when instance is closed
+     * @param task task to extract cleanup behaviour from
      */
-    public AdditionalCleanupActionTask(TaskDefinition task, Runnable closingAction) {
+    public CleaningUpTask(TaskDefinition task) {
         this.task = task;
-        this.closingAction = closingAction;
-    }
-
-    /**
-     * Calls #perform method of the original task @see TaskDefinition#perform
-     */
-    @Override
-    public void perform() {
-        task.perform();
-    }
-
-    /**
-     * Calls #signalKill method of the original task @see TaskDefinition#signalKill
-     */
-    @Override
-    public void signalKill() {
-        task.signalKill();
     }
 
     /**
      * Calls #cleanup method of the original task (@see TaskDefinition#cleanup)
-     * and than calls additional closingAction
+     */
+    @Override
+    public void perform() {
+        task.cleanup();
+    }
+
+    /**
+     * does nothing
+     */
+    @Override
+    public void signalKill() {
+    }
+
+
+    /**
+     * does nothing
      */
     @Override
     public void cleanup() {
-        try {
-            task.cleanup();
-        } finally {
-            closingAction.run();
-        }
     }
 }

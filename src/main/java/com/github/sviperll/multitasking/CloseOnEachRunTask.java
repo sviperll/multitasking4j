@@ -24,19 +24,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
- * Wrapps given task in Runnable object
+ * This class represents TaskDefinition that behaves the same as a TaskDefinition passed to the constructor
+ * but performes cleanup as the last action performed by perform method.
+ * <p>
+ * #cleanup method does nothing.
+ * When #perform method is called, #perform method of the original task is called at first
+ * and than #cleanup method of the original task is called
  */
-class TaskRunnable implements Runnable {
+class CloseOnEachRunTask implements TaskDefinition {
     private final TaskDefinition task;
-    public TaskRunnable(TaskDefinition task) {
+    
+    /**
+     * 
+     * @param task original task to base behaviour on
+     */
+    public CloseOnEachRunTask(TaskDefinition task) {
         this.task = task;
     }
 
+    /**
+     * Calls #signalKill method of the original task @see TaskDefinition#signalKill
+     */
     @Override
-    public void run() {
+    public void signalKill() {
+        task.signalKill();
+    }
+
+    /**
+     * Does nothing
+     */
+    @Override
+    public void cleanup() {
+    }
+
+    /**
+     * Calls #perform method of the original task @see TaskDefinition#perform
+     * and than calls #cleanup method of the original task @see TaskDefinition#cleanup
+     */
+    @Override
+    public void perform() {
         try {
             task.perform();
         } finally {

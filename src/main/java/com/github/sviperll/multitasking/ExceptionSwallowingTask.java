@@ -24,31 +24,67 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
- * @author vir
+ * TaskDefinition that catches all exceptions of the original task, logges them and then just suppresses them
  */
-class WithoutCleanupTask implements TaskDefinition {
+class ExceptionSwallowingTask implements TaskDefinition {
     private final TaskDefinition task;
+    private final Logger logger;
+    private final long pause;
 
-    public WithoutCleanupTask(TaskDefinition task) {
+    /**
+     * 
+     * @param task subtask to perform actual work
+     * @param logger logger used to log exceptions
+     * @param pause pause after exception
+     */
+    public ExceptionSwallowingTask(TaskDefinition task, Logger logger, long pause) {
         this.task = task;
-    }
-
-    @Override
-    public void perform() {
-        task.perform();
+        this.logger = logger;
+        this.pause = pause;
     }
 
     @Override
     public void signalKill() {
-        task.signalKill();
+        try {
+            task.signalKill();
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            try {
+                Thread.sleep(pause);
+            } catch (InterruptedException ex1) {
+            }
+        }
+    }
+
+    @Override
+    public void perform() {
+        try {
+            task.perform();
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            try {
+                Thread.sleep(pause);
+            } catch (InterruptedException ex1) {
+            }
+        }
     }
 
     @Override
     public void cleanup() {
+        try {
+            task.cleanup();
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            try {
+                Thread.sleep(pause);
+            } catch (InterruptedException ex1) {
+            }
+        }
     }
-    
 }

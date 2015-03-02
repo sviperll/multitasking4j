@@ -24,41 +24,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
- * TaskDefinition that runs given Runnable action
+ *
+ * @author Victor Nazarov <asviraspossible@gmail.com>
  */
-public class RunnableTask implements TaskDefinition {
-    private final Runnable runnable;
-    
-    /**
-     * 
-     * @param runnable action to perform
-     */
-    public RunnableTask(Runnable runnable) {
-        this.runnable = runnable;
+class UnkillableTask implements TaskDefinition {
+    private final TaskDefinition task;
+
+    public UnkillableTask(TaskDefinition task) {
+        this.task = task;
     }
 
-    /**
-     * do nothing
-     */
+    @Override
+    public void perform() {
+        task.perform();
+    }
+
     @Override
     public void signalKill() {
     }
 
-    /**
-     * Calls given runnable
-     */
-    @Override
-    public void perform() {
-        runnable.run();
-    }
-
-    /**
-     * Do nothing
-     */
     @Override
     public void cleanup() {
+        task.cleanup();
     }
+
 }

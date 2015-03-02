@@ -24,25 +24,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
+package com.github.sviperll.multitasking;
 
 /**
- * Actions to perform
+ * Wrapps given task in Runnable object
  */
-public interface TaskDefinition {
-    /**
-     * Performs actual work associated with given task
-     */
-    void perform();
-    
-    /**
-     * Interrupts current work performed by task and abort any unfinished work
-     */
-    void signalKill();
+class TaskRunnable implements Runnable {
+    private final TaskDefinition task;
+    public TaskRunnable(TaskDefinition task) {
+        this.task = task;
+    }
 
-    /**
-     * Performs cleanup for given task, i.e. closes files and any other resources,
-     * removes temporary files or database records, etc
-     */
-    void cleanup();
+    @Override
+    public void run() {
+        try {
+            task.perform();
+        } finally {
+            task.cleanup();
+        }
+    }
 }

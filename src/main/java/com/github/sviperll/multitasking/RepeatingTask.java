@@ -24,67 +24,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.sviperll.tasks;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package com.github.sviperll.multitasking;
 
 /**
- * TaskDefinition that catches all exceptions of the original task, logges them and then just suppresses them
+ * TaskDefinition that when perform repeatedly calles perform method of it's subtask
+ * Given pause is performed between invokations of subtask
+ * Stop method breaks repeating cycle
  */
-class ExceptionSwallowingTask implements TaskDefinition {
+public class RepeatingTask implements TaskDefinition {
+    private volatile boolean doExit = false;
     private final TaskDefinition task;
-    private final Logger logger;
     private final long pause;
 
     /**
      * 
-     * @param task subtask to perform actual work
-     * @param logger logger used to log exceptions
-     * @param pause pause after exception
+     * @param task subtask
+     * @param pause pause between subtask invokations in milliseconds
      */
-    public ExceptionSwallowingTask(TaskDefinition task, Logger logger, long pause) {
+    public RepeatingTask(TaskDefinition task, long pause) {
         this.task = task;
-        this.logger = logger;
         this.pause = pause;
     }
 
+    /**
+     * Calls signalKill method of currently running subtask
+     * Stop repeating subtask
+     */
     @Override
     public void signalKill() {
-        try {
-            task.signalKill();
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-            try {
-                Thread.sleep(pause);
-            } catch (InterruptedException ex1) {
-            }
-        }
+        doExit = true;
+        task.signalKill();
     }
 
+    /**
+     * Runs an repeats subtask with given pause between invokations
+     */
     @Override
     public void perform() {
         try {
-            task.perform();
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-            try {
-                Thread.sleep(pause);
-            } catch (InterruptedException ex1) {
+            while (!doExit) {
+                task.perform();
+                try {
+                    Thread.sleep(pause);
+                } catch (InterruptedException ex) {
+                }
             }
+        } finally {
+            doExit = false;
         }
     }
 
+    /**
+     * Performes subtask cleanup as is, i. e. calls subtask's #signalKill method
+     */
     @Override
     public void cleanup() {
-        try {
-            task.cleanup();
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-            try {
-                Thread.sleep(pause);
-            } catch (InterruptedException ex1) {
-            }
-        }
+        task.cleanup();
     }
 }
