@@ -28,6 +28,8 @@ package com.github.sviperll.multitasking;
 
 import com.github.sviperll.Consumer;
 import com.github.sviperll.ResourceProviderDefinition;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -43,14 +45,17 @@ class SourceableResourceTask implements TaskDefinition {
 
     @Override
     public void perform() {
-        source.provideResourceTo(new Consumer<TaskDefinition>() {
-            @Override
-            public void accept(TaskDefinition task) {
-                currentTask = task;
-                task.perform();
-                currentTask = Task.doNothing();
-            }
-        });
+        try {
+            source.provideResourceTo(new Consumer<TaskDefinition>() {
+                @Override
+                public void accept(TaskDefinition task) {
+                    currentTask = task;
+                    task.perform();
+                    currentTask = Task.doNothing();
+                }
+            });
+        } catch (InterruptedException ex) {
+        }
     }
 
     @Override
@@ -60,11 +65,17 @@ class SourceableResourceTask implements TaskDefinition {
 
     @Override
     public void cleanup() {
-        source.provideResourceTo(new Consumer<TaskDefinition>() {
-            @Override
-            public void accept(TaskDefinition task) {
-                task.cleanup();
+        for (;;) {
+            try {
+                source.provideResourceTo(new Consumer<TaskDefinition>() {
+                    @Override
+                    public void accept(TaskDefinition task) {
+                        task.cleanup();
+                    }
+                });
+                break;
+            } catch (InterruptedException ex) {
             }
-        });
+        }
     }
 }

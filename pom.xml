@@ -2,8 +2,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.sviperll</groupId>
-        <artifactId>sviperll-maven-parent-6</artifactId>
-        <version>3.1</version>
+        <artifactId>universal-maven-parent</artifactId>
+        <version>0.21</version>
     </parent>
     <groupId>com.github.sviperll</groupId>
     <artifactId>multitasking4j</artifactId>
@@ -11,9 +11,18 @@
     <version>0.18-SNAPSHOT</version>
     <packaging>jar</packaging>
     <url>https://github.com/sviperll/multitasking4j</url>
-    <properties>
-        <netbeans.hint.license>BSD3</netbeans.hint.license>
-    </properties>
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <site>
+            <id>github</id>
+            <name>GitHub Pages</name>
+            <url>git:gh-pages://git@github.com:sviperll/multitasking4j.git</url>
+        </site>
+    </distributionManagement>
     <scm>
         <connection>scm:git:git://github.com/sviperll/multitasking4j.git</connection>
         <developerConnection>scm:git:git@github.com:sviperll/multitasking4j.git</developerConnection>
@@ -27,24 +36,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>
-                    <docletArtifact>
-                        <groupId>ch.raffael.pegdown-doclet</groupId>
-                        <artifactId>pegdown-doclet</artifactId>
-                        <version>1.1</version>
-                    </docletArtifact>
-                    <useStandardDocletOptions>true</useStandardDocletOptions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <developers>
         <developer>
             <id>sviperll</id>
@@ -52,6 +43,10 @@
             <email>asviraspossible@gmail.com</email>
         </developer>
     </developers>
+    <properties>
+        <parent.profile.activate>!java6,!pitest-report,java7,nexus-deploy</parent.profile.activate>
+        <netbeans.hint.license>BSD3</netbeans.hint.license>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -62,7 +57,7 @@
         <dependency>
             <groupId>com.github.sviperll</groupId>
             <artifactId>chicory-core</artifactId>
-            <version>0.18</version>
+            <version>0.34</version>
         </dependency>
     </dependencies>
 </project>
